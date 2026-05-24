@@ -322,7 +322,7 @@
       <div class="hud-card depth-card">Prof.: <span id="depthMeter">0</span>m</div>
     </div>
 
-    <div class="instructions" id="instructions">Mova o mouse ou arraste na tela para controlar o anzol</div>
+    <div class="instructions" id="instructions">Arraste para os lados e para cima/baixo para controlar o anzol</div>
 
     <div class="overlay" id="startOverlay">
       <div class="panel">
@@ -367,6 +367,8 @@
     let hookWorldX = 0;
     let hookWorldY = 0;
     let targetX = 0;
+    let targetWorldY = 0;
+    let verticalControlActive = false;
     let cameraY = 0;
     let state = 'idle';
     let animationId = null;
@@ -385,6 +387,8 @@
       cameraLimit: 2380,
       downSpeed: 620,
       upSpeed: 145,
+      verticalEase: 0.18,
+      verticalControlRange: 150,
       horizontalEase: 0.2,
       fishCount: 30,
       hookCollisionRadius: 36
@@ -519,12 +523,25 @@
 
       if (state === 'down') {
         hookWorldY += config.downSpeed * dt;
+        targetWorldY = hookWorldY;
         if (hookWorldY >= config.maxDepth) {
           hookWorldY = config.maxDepth;
+          targetWorldY = hookWorldY;
           state = 'up';
         }
       } else if (state === 'up') {
         hookWorldY -= config.upSpeed * dt;
+
+        if (verticalControlActive) {
+          const upperLimit = Math.max(config.endY, hookWorldY - config.verticalControlRange);
+          const lowerLimit = Math.min(config.maxDepth, hookWorldY + config.verticalControlRange);
+          const clampedTargetY = clamp(targetWorldY, upperLimit, lowerLimit);
+          hookWorldY += (clampedTargetY - hookWorldY) * config.verticalEase;
+          hookWorldY = clamp(hookWorldY, config.endY, config.maxDepth);
+        } else {
+          targetWorldY = hookWorldY;
+        }
+
         checkCollisions();
         if (hookWorldY <= config.endY) {
           hookWorldY = config.endY;
@@ -548,6 +565,8 @@
       hookWorldX = gameWidth * config.rodTipXRatio;
       targetX = hookWorldX;
       hookWorldY = config.startY;
+      targetWorldY = hookWorldY;
+      verticalControlActive = false;
       cameraY = 0;
       state = 'down';
       lastTime = 0;
@@ -568,27 +587,40 @@
       renderAll();
     }
 
-    function setTargetFromClientX(clientX) {
+    function setTargetFromClientPosition(clientX, clientY) {
       const rect = game.getBoundingClientRect();
       targetX = clamp(clientX - rect.left, 22, gameWidth - 22);
+
+      if (state === 'up') {
+        targetWorldY = clamp(clientY - rect.top + cameraY, config.endY, config.maxDepth);
+        verticalControlActive = true;
+      }
     }
 
     game.addEventListener('mousemove', event => {
-      if (state === 'down' || state === 'up') setTargetFromClientX(event.clientX);
+      if (state === 'down' || state === 'up') setTargetFromClientPosition(event.clientX, event.clientY);
     });
 
     game.addEventListener('touchstart', event => {
-      if (event.touches[0]) setTargetFromClientX(event.touches[0].clientX);
+      if (event.touches[0]) setTargetFromClientPosition(event.touches[0].clientX, event.touches[0].clientY);
     }, { passive: true });
 
     game.addEventListener('touchmove', event => {
-      if (event.touches[0]) setTargetFromClientX(event.touches[0].clientX);
+      if (event.touches[0]) setTargetFromClientPosition(event.touches[0].clientX, event.touches[0].clientY);
     }, { passive: true });
 
     window.addEventListener('keydown', event => {
       if (state !== 'down' && state !== 'up') return;
       if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') targetX -= 52;
       if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') targetX += 52;
+      if (state === 'up' && (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w')) {
+        targetWorldY = clamp(hookWorldY - 70, config.endY, config.maxDepth);
+        verticalControlActive = true;
+      }
+      if (state === 'up' && (event.key === 'ArrowDown' || event.key.toLowerCase() === 's')) {
+        targetWorldY = clamp(hookWorldY + 70, config.endY, config.maxDepth);
+        verticalControlActive = true;
+      }
       targetX = clamp(targetX, 22, gameWidth - 22);
     });
 
