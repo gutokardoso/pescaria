@@ -6,83 +6,144 @@
   <title>Game de Pescaria</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top, #9de8ff 0%, #2b9bd8 45%, #00689b 100%); font-family: Arial, Helvetica, sans-serif; overflow: hidden; color: #ffffff; }
-    .game-shell { position: relative; width: min(100vw, 520px); height: min(100vh, 920px); aspect-ratio: 9 / 16; background: linear-gradient(to bottom, #8ee7ff 0 15%, #3bb7e6 15% 25%, #0479b9 25% 100%); overflow: hidden; border-radius: 24px; box-shadow: 0 24px 80px rgba(0, 30, 60, 0.45); touch-action: none; user-select: none; }
-    .sky { position: absolute; inset: 0 0 auto 0; height: 24%; background: linear-gradient(to bottom, #baf4ff, #73dfff); overflow: hidden; }
-    .sun { position: absolute; top: 28px; right: 34px; width: 62px; height: 62px; border-radius: 50%; background: #ffd95d; box-shadow: 0 0 40px rgba(255, 217, 93, 0.9); }
-    .cloud { position: absolute; width: 92px; height: 30px; border-radius: 999px; background: rgba(255, 255, 255, 0.8); top: 52px; left: 26px; animation: cloudMove 14s linear infinite; }
-    .cloud::before, .cloud::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.9); }
-    .cloud::before { width: 38px; height: 38px; left: 16px; top: -18px; }
-    .cloud::after { width: 50px; height: 50px; right: 14px; top: -25px; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #98eaff 0%, #1c8ec7 48%, #00395f 100%);
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+    }
+    .game-shell {
+      position: relative;
+      width: min(100vw, 520px);
+      height: min(100vh, 920px);
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      border-radius: 24px;
+      box-shadow: 0 24px 80px rgba(0, 30, 60, 0.45);
+      touch-action: none;
+      user-select: none;
+      background: #0479b9;
+    }
+    .world {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 3400px;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+    }
+    .sky {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 230px;
+      background: linear-gradient(to bottom, #bdf7ff, #72dfff 72%, #43c1ec);
+      overflow: hidden;
+    }
+    .sun { position: absolute; top: 30px; right: 34px; width: 62px; height: 62px; border-radius: 50%; background: #ffd95d; box-shadow: 0 0 40px rgba(255, 217, 93, .9); }
+    .cloud { position: absolute; width: 92px; height: 30px; border-radius: 999px; background: rgba(255,255,255,.82); top: 54px; left: 26px; animation: cloudMove 14s linear infinite; }
+    .cloud::before,.cloud::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.9)}
+    .cloud::before{width:38px;height:38px;left:16px;top:-18px}.cloud::after{width:50px;height:50px;right:14px;top:-25px}
     @keyframes cloudMove { from { transform: translateX(-120px); } to { transform: translateX(600px); } }
-    .sea-top { position: absolute; left: -10%; right: -10%; top: 21%; height: 52px; background: rgba(255, 255, 255, 0.35); border-radius: 50%; animation: wave 2.6s ease-in-out infinite alternate; }
-    @keyframes wave { from { transform: translateX(-18px) scaleY(0.85); } to { transform: translateX(18px) scaleY(1.05); } }
-    .hud { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; z-index: 20; pointer-events: none; }
-    .hud-card { background: rgba(0, 28, 60, 0.42); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 9px 14px; font-weight: 800; font-size: 14px; text-shadow: 0 2px 8px rgba(0,0,0,0.25); }
-    .boat-wrap { position: absolute; top: 12.8%; left: 50%; width: 230px; height: 120px; transform: translateX(-50%); z-index: 10; animation: boatFloat 2s ease-in-out infinite alternate; }
+    .ocean {
+      position: absolute;
+      left: 0;
+      top: 185px;
+      width: 100%;
+      height: 3215px;
+      background:
+        radial-gradient(circle at 16% 30%, rgba(153,240,255,.28) 0 2px, transparent 3px),
+        radial-gradient(circle at 78% 45%, rgba(153,240,255,.22) 0 2px, transparent 3px),
+        radial-gradient(circle at 34% 67%, rgba(153,240,255,.20) 0 2px, transparent 3px),
+        linear-gradient(to bottom, #16a7dc 0%, #0878b7 18%, #054f8b 45%, #033767 72%, #021d3d 100%);
+      overflow: hidden;
+    }
+    .sea-top { position: absolute; left: -10%; right: -10%; top: -19px; height: 55px; background: rgba(255,255,255,.38); border-radius: 50%; animation: wave 2.5s ease-in-out infinite alternate; z-index: 3; }
+    @keyframes wave { from { transform: translateX(-18px) scaleY(.85); } to { transform: translateX(18px) scaleY(1.05); } }
+    .water-light { position: absolute; top: 90px; width: 160px; height: 750px; background: linear-gradient(to bottom, rgba(166,241,255,.2), transparent); filter: blur(4px); transform: skewX(-14deg); }
+    .water-light.one { left: 30px; } .water-light.two { right: 25px; top: 260px; opacity: .65; }
+    .seabed { position: absolute; left: 0; right: 0; bottom: 0; height: 210px; background: linear-gradient(to top, #b47a32, #d9b05c); border-radius: 50% 50% 0 0 / 22% 22% 0 0; }
+    .coral { position: absolute; bottom: 70px; width: 16px; height: 92px; background: #ff5f7c; border-radius: 999px 999px 0 0; }
+    .coral::before,.coral::after{content:"";position:absolute;width:13px;height:52px;background:inherit;border-radius:999px 999px 0 0;bottom:24px}.coral::before{left:-17px;transform:rotate(-28deg)}.coral::after{right:-16px;transform:rotate(28deg)}
+    .coral.c1{left:70px}.coral.c2{right:80px;height:72px;background:#ff9a3d}.rock{position:absolute;bottom:48px;width:82px;height:38px;border-radius:50% 50% 18px 18px;background:#6f8791}.rock.r1{left:145px}.rock.r2{right:150px;width:60px;height:30px;background:#526b75}
+    .boat-wrap { position: absolute; top: 106px; left: 50%; width: 230px; height: 120px; transform: translateX(-50%); z-index: 12; animation: boatFloat 2s ease-in-out infinite alternate; }
     @keyframes boatFloat { from { transform: translateX(-50%) translateY(-2px) rotate(-1deg); } to { transform: translateX(-50%) translateY(5px) rotate(1deg); } }
     .boat { position: absolute; bottom: 0; left: 12px; width: 206px; height: 54px; background: linear-gradient(to bottom, #b96a2c, #7d3f19); border-radius: 0 0 90px 90px; border: 4px solid #5a2a10; overflow: hidden; }
-    .boat::before { content: ""; position: absolute; inset: 8px 20px auto 20px; height: 12px; border-radius: 999px; background: rgba(255, 220, 140, 0.5); }
+    .boat::before { content:""; position:absolute; inset: 8px 20px auto 20px; height: 12px; border-radius: 999px; background: rgba(255,220,140,.5); }
     .character { position: absolute; bottom: 42px; left: 78px; width: 64px; height: 76px; }
-    .head { position: absolute; top: 0; left: 21px; width: 30px; height: 30px; border-radius: 50%; background: #ffd0a4; border: 3px solid #6b3a20; }
-    .cap { position: absolute; top: -3px; left: 15px; width: 40px; height: 18px; background: #ff5757; border-radius: 18px 18px 6px 6px; border: 3px solid #a52727; }
-    .body { position: absolute; top: 29px; left: 17px; width: 40px; height: 38px; border-radius: 15px 15px 10px 10px; background: #ffe65a; border: 3px solid #876500; }
-    .arm { position: absolute; top: 34px; right: -2px; width: 46px; height: 8px; background: #ffd0a4; border-radius: 999px; transform: rotate(20deg); transform-origin: left center; border: 2px solid #6b3a20; }
-    .rod { position: absolute; bottom: 70px; left: 137px; width: 128px; height: 5px; background: #4d2b12; border-radius: 999px; transform: rotate(27deg); transform-origin: left center; z-index: 8; }
-    .line { position: absolute; top: 22%; width: 3px; background: rgba(255, 255, 255, 0.8); border-radius: 999px; transform-origin: top center; z-index: 6; box-shadow: 0 0 8px rgba(255,255,255,0.45); }
-    .hook { position: absolute; width: 28px; height: 28px; border: 4px solid #e9f7ff; border-left-color: transparent; border-top-color: transparent; border-radius: 50%; z-index: 7; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.25)); }
-    .hook::before { content: ""; position: absolute; width: 4px; height: 14px; background: #e9f7ff; top: -12px; left: 10px; border-radius: 999px; }
-    .fish { position: absolute; width: 54px; height: 30px; border-radius: 55% 45% 45% 55%; z-index: 4; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; box-shadow: inset -8px -7px rgba(0,0,0,0.12); }
-    .fish::before { content: ""; position: absolute; right: -16px; width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid currentColor; }
-    .fish::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #001d3d; position: absolute; left: 12px; top: 8px; }
-    .fish.normal { background: #5ee0ff; color: #5ee0ff; }
-    .fish.gold { width: 60px; height: 34px; background: linear-gradient(135deg, #fff38a, #ffb300); color: #ffb300; box-shadow: 0 0 18px rgba(255, 211, 51, 0.8), inset -8px -7px rgba(0,0,0,0.1); }
-    .fish.caught { opacity: 0; transform: scale(0.3) !important; transition: 0.18s ease; }
-    .bubble { position: absolute; bottom: -30px; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.65); border-radius: 50%; opacity: 0.6; animation: bubbleUp 6s linear infinite; }
+    .head { position:absolute; top:0; left:21px; width:30px; height:30px; border-radius:50%; background:#ffd0a4; border:3px solid #6b3a20; }
+    .cap { position:absolute; top:-3px; left:15px; width:40px; height:18px; background:#ff5757; border-radius:18px 18px 6px 6px; border:3px solid #a52727; }
+    .body { position:absolute; top:29px; left:17px; width:40px; height:38px; border-radius:15px 15px 10px 10px; background:#ffe65a; border:3px solid #876500; }
+    .arm { position:absolute; top:34px; right:-2px; width:46px; height:8px; background:#ffd0a4; border-radius:999px; transform:rotate(20deg); transform-origin:left center; border:2px solid #6b3a20; }
+    .rod { position:absolute; bottom:70px; left:137px; width:128px; height:5px; background:#4d2b12; border-radius:999px; transform:rotate(27deg); transform-origin:left center; z-index:8; }
+    .line { position: absolute; width: 3px; height: 10px; background: rgba(255,255,255,.86); border-radius: 999px; transform-origin: top center; z-index: 18; box-shadow: 0 0 8px rgba(255,255,255,.45); pointer-events: none; }
+    .hook { position: absolute; width: 28px; height: 28px; border: 4px solid #e9f7ff; border-left-color: transparent; border-top-color: transparent; border-radius: 50%; z-index: 19; filter: drop-shadow(0 3px 5px rgba(0,0,0,.25)); pointer-events: none; }
+    .hook::before { content:""; position:absolute; width:4px; height:14px; background:#e9f7ff; top:-12px; left:10px; border-radius:999px; }
+    .fish { position: absolute; width: 54px; height: 30px; border-radius: 55% 45% 45% 55%; z-index: 5; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; box-shadow: inset -8px -7px rgba(0,0,0,.12); }
+    .fish::before { content:""; position:absolute; right:-16px; width:0; height:0; border-top:14px solid transparent; border-bottom:14px solid transparent; border-left:20px solid currentColor; }
+    .fish::after { content:""; width:5px; height:5px; border-radius:50%; background:#001d3d; position:absolute; left:12px; top:8px; }
+    .fish.normal { background:#5ee0ff; color:#5ee0ff; }
+    .fish.gold { width:60px; height:34px; background:linear-gradient(135deg,#fff38a,#ffb300); color:#ffb300; box-shadow:0 0 18px rgba(255,211,51,.8), inset -8px -7px rgba(0,0,0,.1); }
+    .fish.caught { opacity:0; transform:scale(.3)!important; transition:.18s ease; }
+    .bubble { position:absolute; width:12px; height:12px; border:2px solid rgba(255,255,255,.55); border-radius:50%; opacity:.55; animation: bubbleUp 7s linear infinite; }
     @keyframes bubbleUp { to { transform: translateY(-850px); opacity: 0; } }
-    .overlay { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 26px; background: rgba(0, 34, 72, 0.45); backdrop-filter: blur(7px); }
-    .panel { width: 100%; max-width: 390px; border-radius: 28px; background: rgba(255, 255, 255, 0.94); color: #003b62; padding: 28px; text-align: center; box-shadow: 0 24px 70px rgba(0, 25, 50, 0.35); }
-    .panel h1 { font-size: 36px; line-height: 1; margin-bottom: 12px; color: #0077b6; }
-    .panel p { font-size: 16px; line-height: 1.45; margin-bottom: 18px; color: #26566d; }
-    .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 22px; }
-    .score-box { background: #e6f8ff; border-radius: 18px; padding: 12px 8px; font-weight: 900; color: #00557d; }
-    .score-box span { display: block; font-size: 12px; font-weight: 800; color: #5090aa; margin-bottom: 4px; }
-    button { border: 0; border-radius: 999px; background: linear-gradient(135deg, #ffcc33, #ff8f1f); color: #003b62; font-weight: 900; font-size: 18px; padding: 15px 26px; cursor: pointer; box-shadow: 0 10px 0 #c56800, 0 18px 30px rgba(255, 143, 31, 0.35); transition: transform 0.1s ease, box-shadow 0.1s ease; }
-    button:active { transform: translateY(5px); box-shadow: 0 5px 0 #c56800, 0 12px 22px rgba(255, 143, 31, 0.28); }
-    .hidden { display: none; }
-    .instructions { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 25; width: calc(100% - 32px); text-align: center; font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.92); text-shadow: 0 2px 8px rgba(0,0,0,0.35); pointer-events: none; }
-    @media (max-width: 560px) { .game-shell { width: 100vw; height: 100vh; border-radius: 0; } .panel h1 { font-size: 32px; } }
+    .hud { position:absolute; top:16px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:center; z-index:30; pointer-events:none; }
+    .hud-card { background:rgba(0,28,60,.42); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:9px 14px; font-weight:800; font-size:14px; text-shadow:0 2px 8px rgba(0,0,0,.25); }
+    .depth-card { position:absolute; left:50%; top:58px; transform:translateX(-50%); z-index:30; background:rgba(0,28,60,.35); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:7px 13px; font-size:12px; font-weight:900; pointer-events:none; }
+    .overlay { position:absolute; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:26px; background:rgba(0,34,72,.45); backdrop-filter:blur(7px); }
+    .panel { width:100%; max-width:390px; border-radius:28px; background:rgba(255,255,255,.94); color:#003b62; padding:28px; text-align:center; box-shadow:0 24px 70px rgba(0,25,50,.35); }
+    .panel h1 { font-size:36px; line-height:1; margin-bottom:12px; color:#0077b6; }.panel p{font-size:16px;line-height:1.45;margin-bottom:18px;color:#26566d}
+    .score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 22px}.score-box{background:#e6f8ff;border-radius:18px;padding:12px 8px;font-weight:900;color:#00557d}.score-box span{display:block;font-size:12px;font-weight:800;color:#5090aa;margin-bottom:4px}
+    button{border:0;border-radius:999px;background:linear-gradient(135deg,#ffcc33,#ff8f1f);color:#003b62;font-weight:900;font-size:18px;padding:15px 26px;cursor:pointer;box-shadow:0 10px 0 #c56800,0 18px 30px rgba(255,143,31,.35);transition:transform .1s ease,box-shadow .1s ease}button:active{transform:translateY(5px);box-shadow:0 5px 0 #c56800,0 12px 22px rgba(255,143,31,.28)}
+    .hidden{display:none}.instructions{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:25;width:calc(100% - 32px);text-align:center;font-size:13px;font-weight:800;color:rgba(255,255,255,.92);text-shadow:0 2px 8px rgba(0,0,0,.35);pointer-events:none}
+    @media (max-width:560px){.game-shell{width:100vw;height:100vh;border-radius:0}.panel h1{font-size:32px}}
   </style>
 </head>
 <body>
   <main class="game-shell" id="game">
-    <div class="sky"><div class="sun"></div><div class="cloud"></div></div><div class="sea-top"></div>
+    <div class="world" id="world">
+      <div class="sky"><div class="sun"></div><div class="cloud"></div></div>
+      <div class="ocean" id="ocean">
+        <div class="sea-top"></div><div class="water-light one"></div><div class="water-light two"></div>
+        <div class="seabed"><div class="coral c1"></div><div class="coral c2"></div><div class="rock r1"></div><div class="rock r2"></div></div>
+      </div>
+      <div class="boat-wrap" id="boatWrap"><div class="character"><div class="cap"></div><div class="head"></div><div class="body"></div><div class="arm"></div></div><div class="rod"></div><div class="boat"></div></div>
+    </div>
+    <div class="line" id="line"></div><div class="hook" id="hook"></div>
     <div class="hud"><div class="hud-card">Pontos: <span id="liveScore">0</span></div><div class="hud-card">Peixes: <span id="liveFish">0</span></div></div>
-    <div class="boat-wrap"><div class="character"><div class="cap"></div><div class="head"></div><div class="body"></div><div class="arm"></div></div><div class="rod"></div><div class="boat"></div></div>
-    <div class="line" id="line"></div><div class="hook" id="hook"></div><div class="instructions" id="instructions">Mova o mouse ou arraste na tela para controlar o anzol</div>
-    <div class="overlay" id="startOverlay"><div class="panel"><h1>Pescaria</h1><p>O anzol desce até o fundo e depois sobe sozinho. Controle para os lados e resgate o máximo de peixinhos no caminho.</p><button id="startBtn">Jogar agora</button></div></div>
+    <div class="depth-card">Profundidade: <span id="depthValue">0m</span></div>
+    <div class="instructions" id="instructions">Mova o mouse ou arraste na tela para controlar o anzol</div>
+    <div class="overlay" id="startOverlay"><div class="panel"><h1>Pescaria</h1><p>O anzol desce até o fundo do mar e depois sobe sozinho. Controle para os lados e resgate o máximo de peixinhos no caminho.</p><button id="startBtn">Jogar agora</button></div></div>
     <div class="overlay hidden" id="resultOverlay"><div class="panel"><h1>Resultado</h1><p>Contagem final dos peixinhos resgatados.</p><div class="score-grid"><div class="score-box"><span>Comuns</span><strong id="normalCount">0</strong></div><div class="score-box"><span>Dourados</span><strong id="goldCount">0</strong></div><div class="score-box"><span>Total</span><strong id="finalScore">0</strong></div></div><button id="restartBtn">Jogar de novo</button></div></div>
   </main>
   <script>
-    const game = document.getElementById('game'), line = document.getElementById('line'), hook = document.getElementById('hook'), liveScore = document.getElementById('liveScore'), liveFish = document.getElementById('liveFish'), startOverlay = document.getElementById('startOverlay'), resultOverlay = document.getElementById('resultOverlay'), startBtn = document.getElementById('startBtn'), restartBtn = document.getElementById('restartBtn'), normalCountEl = document.getElementById('normalCount'), goldCountEl = document.getElementById('goldCount'), finalScoreEl = document.getElementById('finalScore');
-    let gameWidth = 0, gameHeight = 0, hookX = 0, hookY = 0, targetX = 0, state = 'idle', animationId = null, fishes = [], score = 0, normalCaught = 0, goldCaught = 0, lastTime = 0;
-    const config = { startYRatio: 0.23, maxDepthRatio: 0.84, endYRatio: 0.28, downSpeed: 360, upSpeed: 230, horizontalEase: 0.18, hookSize: 28, fishCount: 24 };
-    function resize(){ const rect = game.getBoundingClientRect(); gameWidth = rect.width; gameHeight = rect.height; if(state === 'idle'){ hookX = gameWidth / 2; hookY = gameHeight * config.startYRatio; targetX = hookX; renderHook(); } }
-    function createBubbles(){ document.querySelectorAll('.bubble').forEach(bubble => bubble.remove()); for(let i=0;i<18;i++){ const bubble=document.createElement('div'); bubble.className='bubble'; bubble.style.left=`${Math.random()*94+3}%`; bubble.style.width=`${8+Math.random()*15}px`; bubble.style.height=bubble.style.width; bubble.style.animationDelay=`${Math.random()*6}s`; bubble.style.animationDuration=`${5+Math.random()*5}s`; game.appendChild(bubble); } }
-    function spawnFishes(){ fishes.forEach(fish => fish.el.remove()); fishes=[]; const minY=gameHeight*0.34, maxY=gameHeight*0.79; for(let i=0;i<config.fishCount;i++){ const isGold=Math.random()<0.18, el=document.createElement('div'); el.className=`fish ${isGold?'gold':'normal'}`; const dir=Math.random()>0.5?1:-1, y=minY+Math.random()*(maxY-minY), speed=(42+Math.random()*74)*dir, x=dir===1?-90-Math.random()*260:gameWidth+90+Math.random()*260; el.style.top=`${y}px`; if(dir===-1) el.style.transform='scaleX(-1)'; game.appendChild(el); fishes.push({el,x,y,speed,dir,type:isGold?'gold':'normal',value:isGold?50:10,caught:false,width:isGold?76:70,height:isGold?38:34}); } }
-    function renderHook(){ const startY=gameHeight*config.startYRatio; line.style.left=`${hookX+12}px`; line.style.top=`${startY}px`; line.style.height=`${Math.max(0, hookY-startY+5)}px`; hook.style.left=`${hookX}px`; hook.style.top=`${hookY}px`; }
-    function renderFishes(dt){ fishes.forEach(fish=>{ if(fish.caught) return; fish.x += fish.speed*dt; if(fish.dir===1 && fish.x>gameWidth+120){ fish.x=-120; fish.y=gameHeight*0.34+Math.random()*(gameHeight*0.45); } if(fish.dir===-1 && fish.x<-140){ fish.x=gameWidth+120; fish.y=gameHeight*0.34+Math.random()*(gameHeight*0.45); } fish.el.style.left=`${fish.x}px`; fish.el.style.top=`${fish.y}px`; }); }
-    function checkCollisions(){ const hookCenterX=hookX+14, hookCenterY=hookY+14; fishes.forEach(fish=>{ if(fish.caught) return; const fishCenterX=fish.x+fish.width/2, fishCenterY=fish.y+fish.height/2, dx=hookCenterX-fishCenterX, dy=hookCenterY-fishCenterY, distance=Math.sqrt(dx*dx+dy*dy); if(distance<34){ fish.caught=true; fish.el.classList.add('caught'); score += fish.value; if(fish.type==='gold') goldCaught += 1; else normalCaught += 1; updateHud(); } }); }
+    const game = document.getElementById('game'), world = document.getElementById('world'), ocean = document.getElementById('ocean'), line = document.getElementById('line'), hook = document.getElementById('hook'), liveScore = document.getElementById('liveScore'), liveFish = document.getElementById('liveFish'), depthValue = document.getElementById('depthValue'), startOverlay = document.getElementById('startOverlay'), resultOverlay = document.getElementById('resultOverlay'), startBtn = document.getElementById('startBtn'), restartBtn = document.getElementById('restartBtn'), normalCountEl = document.getElementById('normalCount'), goldCountEl = document.getElementById('goldCount'), finalScoreEl = document.getElementById('finalScore');
+    let gameWidth = 0, gameHeight = 0, worldHeight = 3400, cameraY = 0, hookX = 0, hookY = 0, targetX = 0, rodTipX = 0, rodTipY = 0, state = 'idle', animationId = null, fishes = [], score = 0, normalCaught = 0, goldCaught = 0, lastTime = 0;
+    const config = { oceanTop: 185, startDepth: 90, maxDepth: 3000, endDepth: 115, downSpeed: 720, upSpeed: 440, horizontalEase: 0.18, hookSize: 28, fishCount: 42 };
+    function resize(){ const rect = game.getBoundingClientRect(); gameWidth = rect.width; gameHeight = rect.height; worldHeight = Math.max(3200, gameHeight * 3.9); world.style.height = `${worldHeight}px`; ocean.style.height = `${worldHeight - config.oceanTop}px`; calculateRodTip(); if(state === 'idle'){ hookX = rodTipX - 14; hookY = config.oceanTop + config.startDepth; targetX = hookX; cameraY = 0; renderScene(); } }
+    function calculateRodTip(){ rodTipX = gameWidth / 2 + 114; rodTipY = 106 + 48 + Math.sin(27 * Math.PI / 180) * 128; }
+    function createBubbles(){ document.querySelectorAll('.bubble').forEach(b => b.remove()); for(let i=0;i<34;i++){ const b=document.createElement('div'); b.className='bubble'; b.style.left=`${Math.random()*92+4}%`; b.style.top=`${config.oceanTop + 250 + Math.random()*(worldHeight-config.oceanTop-500)}px`; b.style.width=`${7+Math.random()*15}px`; b.style.height=b.style.width; b.style.animationDelay=`${Math.random()*7}s`; b.style.animationDuration=`${5+Math.random()*6}s`; world.appendChild(b); } }
+    function spawnFishes(){ fishes.forEach(fish => fish.el.remove()); fishes=[]; const minY=config.oceanTop+260, maxY=worldHeight-360; for(let i=0;i<config.fishCount;i++){ const isGold=Math.random()<0.18, el=document.createElement('div'); el.className=`fish ${isGold?'gold':'normal'}`; const dir=Math.random()>0.5?1:-1, y=minY+Math.random()*(maxY-minY), speed=(55+Math.random()*95)*dir, x=dir===1?-100-Math.random()*350:gameWidth+100+Math.random()*350; if(dir===-1) el.style.transform='scaleX(-1)'; world.appendChild(el); fishes.push({el,x,y,speed,dir,type:isGold?'gold':'normal',value:isGold?50:10,caught:false,width:isGold?76:70,height:isGold?38:34}); } }
+    function updateCamera(){ if(state === 'down' || state === 'up'){ const desired = hookY - gameHeight * 0.62; const maxCamera = Math.max(0, worldHeight - gameHeight); cameraY += (Math.max(0, Math.min(maxCamera, desired)) - cameraY) * 0.12; } else if(state === 'idle'){ cameraY = 0; } }
+    function renderScene(){ world.style.transform = `translate3d(0, ${-cameraY}px, 0)`; const anchorScreenX = rodTipX, anchorScreenY = rodTipY - cameraY, hookScreenX = hookX, hookScreenY = hookY - cameraY; const hookAttachX = hookScreenX + 14, hookAttachY = hookScreenY - 8; const dx = hookAttachX - anchorScreenX, dy = hookAttachY - anchorScreenY; const length = Math.max(4, Math.sqrt(dx*dx + dy*dy)); const angle = Math.atan2(dy, dx) * 180 / Math.PI - 90; line.style.left = `${anchorScreenX}px`; line.style.top = `${anchorScreenY}px`; line.style.height = `${length}px`; line.style.transform = `rotate(${angle}deg)`; hook.style.left = `${hookScreenX}px`; hook.style.top = `${hookScreenY}px`; depthValue.textContent = `${Math.max(0, Math.round((hookY - config.oceanTop) / 10))}m`; }
+    function renderFishes(dt){ fishes.forEach(fish=>{ if(fish.caught) return; fish.x += fish.speed*dt; if(fish.dir===1 && fish.x>gameWidth+130){ fish.x=-130; fish.y=config.oceanTop+250+Math.random()*(worldHeight-config.oceanTop-620); } if(fish.dir===-1 && fish.x<-150){ fish.x=gameWidth+130; fish.y=config.oceanTop+250+Math.random()*(worldHeight-config.oceanTop-620); } fish.el.style.left=`${fish.x}px`; fish.el.style.top=`${fish.y}px`; }); }
+    function checkCollisions(){ const hookCenterX=hookX+14, hookCenterY=hookY+14; fishes.forEach(fish=>{ if(fish.caught) return; const fishCenterX=fish.x+fish.width/2, fishCenterY=fish.y+fish.height/2, dx=hookCenterX-fishCenterX, dy=hookCenterY-fishCenterY, distance=Math.sqrt(dx*dx+dy*dy); if(distance<35){ fish.caught=true; fish.el.classList.add('caught'); score += fish.value; fish.type==='gold' ? goldCaught++ : normalCaught++; updateHud(); } }); }
     function updateHud(){ liveScore.textContent=score; liveFish.textContent=normalCaught+goldCaught; }
-    function update(timestamp){ if(!lastTime) lastTime=timestamp; const dt=Math.min((timestamp-lastTime)/1000,0.033); lastTime=timestamp; hookX += (targetX-hookX)*config.horizontalEase; hookX=Math.max(18,Math.min(gameWidth-44,hookX)); if(state==='down'){ hookY += config.downSpeed*dt; if(hookY>=gameHeight*config.maxDepthRatio){ hookY=gameHeight*config.maxDepthRatio; state='up'; } } else if(state==='up'){ hookY -= config.upSpeed*dt; checkCollisions(); if(hookY<=gameHeight*config.endYRatio){ finishRound(); return; } } renderFishes(dt); renderHook(); animationId=requestAnimationFrame(update); }
-    function startRound(){ cancelAnimationFrame(animationId); resize(); score=0; normalCaught=0; goldCaught=0; updateHud(); hookX=gameWidth/2; targetX=hookX; hookY=gameHeight*config.startYRatio; state='down'; lastTime=0; startOverlay.classList.add('hidden'); resultOverlay.classList.add('hidden'); spawnFishes(); renderHook(); animationId=requestAnimationFrame(update); }
-    function finishRound(){ state='result'; cancelAnimationFrame(animationId); normalCountEl.textContent=normalCaught; goldCountEl.textContent=goldCaught; finalScoreEl.textContent=score; resultOverlay.classList.remove('hidden'); }
+    function update(timestamp){ if(!lastTime) lastTime=timestamp; const dt=Math.min((timestamp-lastTime)/1000,0.033); lastTime=timestamp; hookX += (targetX-hookX)*config.horizontalEase; hookX=Math.max(18,Math.min(gameWidth-44,hookX)); if(state==='down'){ hookY += config.downSpeed*dt; if(hookY>=config.oceanTop+config.maxDepth){ hookY=config.oceanTop+config.maxDepth; state='up'; } } else if(state==='up'){ hookY -= config.upSpeed*dt; checkCollisions(); if(hookY<=config.oceanTop+config.endDepth){ finishRound(); return; } } renderFishes(dt); updateCamera(); renderScene(); animationId=requestAnimationFrame(update); }
+    function startRound(){ cancelAnimationFrame(animationId); resize(); score=0; normalCaught=0; goldCaught=0; updateHud(); cameraY=0; hookX=rodTipX-14; targetX=hookX; hookY=config.oceanTop+config.startDepth; state='down'; lastTime=0; startOverlay.classList.add('hidden'); resultOverlay.classList.add('hidden'); spawnFishes(); createBubbles(); renderScene(); animationId=requestAnimationFrame(update); }
+    function finishRound(){ state='result'; cancelAnimationFrame(animationId); cameraY = 0; hookX = rodTipX - 14; hookY = config.oceanTop + config.endDepth; renderScene(); normalCountEl.textContent=normalCaught; goldCountEl.textContent=goldCaught; finalScoreEl.textContent=score; resultOverlay.classList.remove('hidden'); }
     function setTargetFromClientX(clientX){ const rect=game.getBoundingClientRect(); targetX=clientX-rect.left-config.hookSize/2; }
     game.addEventListener('mousemove', event => { if(state==='down'||state==='up') setTargetFromClientX(event.clientX); });
     game.addEventListener('touchstart', event => { if(event.touches[0]) setTargetFromClientX(event.touches[0].clientX); }, { passive:true });
     game.addEventListener('touchmove', event => { if(event.touches[0]) setTargetFromClientX(event.touches[0].clientX); }, { passive:true });
-    window.addEventListener('keydown', event => { if(state!=='down'&&state!=='up') return; if(event.key==='ArrowLeft'||event.key.toLowerCase()==='a') targetX -= 42; if(event.key==='ArrowRight'||event.key.toLowerCase()==='d') targetX += 42; });
-    startBtn.addEventListener('click', startRound); restartBtn.addEventListener('click', startRound); window.addEventListener('resize', resize); resize(); createBubbles(); renderHook();
+    window.addEventListener('keydown', event => { if(state!=='down'&&state!=='up') return; if(event.key==='ArrowLeft'||event.key.toLowerCase()==='a') targetX -= 48; if(event.key==='ArrowRight'||event.key.toLowerCase()==='d') targetX += 48; });
+    startBtn.addEventListener('click', startRound); restartBtn.addEventListener('click', startRound); window.addEventListener('resize', resize); resize(); createBubbles(); renderScene();
   </script>
 </body>
 </html>
