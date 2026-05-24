@@ -120,8 +120,8 @@
     }
     .hook {
       position: absolute;
-      width: 60px;
-      height: 82px;
+      width: 52px;
+      height: 72px;
       background-image: url('./assets/hook.png');
       background-size: contain;
       background-repeat: no-repeat;
@@ -473,7 +473,7 @@
       fishingLine.setAttribute('x2', hookScreenX.toFixed(1));
       fishingLine.setAttribute('y2', hookScreenY.toFixed(1));
 
-      hook.style.left = `${hookScreenX - 22}px`;
+      hook.style.left = `${hookScreenX - 14}px`;
       hook.style.top = `${hookScreenY}px`;
       depthMeter.textContent = Math.max(0, Math.round((hookWorldY - config.startY) / 10));
     }
