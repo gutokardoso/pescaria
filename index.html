@@ -295,6 +295,12 @@
         bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
       }
     }
+  
+    .start-logo {
+      width: min(100%, 340px);
+      display: block;
+      margin: 0 auto 14px auto;
+    }
   </style>
 </head>
 <body>
@@ -320,8 +326,8 @@
 
     <div class="overlay" id="startOverlay">
       <div class="panel">
-        <h1>Pescaria</h1>
-        <p>O anzol desce até o fundo do mar e depois sobe sozinho. Controle para os lados e resgate o máximo de peixinhos.</p>
+        <img class="start-logo" src="./assets/logo-pescaria.png" alt="Pescaria - Aventura no Mar" />
+        <p>Mova o anzol para os lados para pegar os peixes no caminho. Peixes dourados valem mais pontos!</p>
         <button id="startBtn">Jogar agora</button>
       </div>
     </div>
