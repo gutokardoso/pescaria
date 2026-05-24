@@ -100,22 +100,16 @@
     }
     .hook {
       position: absolute;
-      width: 34px;
-      height: 42px;
-      transform: translate(-50%, -12px);
-      z-index: 13;
-      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+      width: 72px;
+      height: 96px;
+      background-image: url('./assets/hook.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 7;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.22));
     }
-    .hook::before {
-      content: "";
-      position: absolute;
-      left: 14px;
-      top: 0;
-      width: 4px;
-      height: 18px;
-      background: linear-gradient(#faffff, #8597a3);
-      border-radius: 999px;
-    }
+    .hook::before { display: none; }
     .hook::after {
       content: "";
       position: absolute;
