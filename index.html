@@ -428,7 +428,7 @@
       fishingLine.setAttribute('x2', hookScreenX.toFixed(1));
       fishingLine.setAttribute('y2', hookScreenY.toFixed(1));
 
-      hook.style.left = `${hookScreenX}px`;
+      hook.style.left = `${hookScreenX - 16}px`;
       hook.style.top = `${hookScreenY}px`;
       depthMeter.textContent = Math.max(0, Math.round((hookWorldY - config.startY) / 10));
     }
