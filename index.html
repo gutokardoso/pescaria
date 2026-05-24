@@ -301,6 +301,34 @@
       display: block;
       margin: 0 auto 14px auto;
     }
+  
+    .score-pop {
+      position: absolute;
+      width: 82px;
+      height: auto;
+      z-index: 120;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.65);
+      opacity: 0;
+      animation: scorePop 0.65s ease-out forwards;
+      filter: drop-shadow(0 6px 10px rgba(0, 40, 80, 0.28));
+    }
+
+    @keyframes scorePop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -45%) scale(0.55);
+      }
+      22% {
+        opacity: 1;
+        transform: translate(-50%, -68%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -105%) scale(0.82);
+      }
+    }
+
   </style>
   <link rel="icon" type="image/png" href="./assets/fish-gold.png">
 </head>
@@ -491,6 +519,18 @@
       depthMeter.textContent = Math.max(0, Math.round((hookWorldY - config.startY) / 10));
     }
 
+
+    function showScorePop(value, x, y) {
+      const img = document.createElement('img');
+      img.className = 'score-pop';
+      img.src = value === 50 ? './assets/score-50.png' : './assets/score-10.png';
+      img.alt = `+${value} pontos`;
+      img.style.left = `${x}px`;
+      img.style.top = `${y}px`;
+      game.appendChild(img);
+      setTimeout(() => img.remove(), 700);
+    }
+
     function checkCollisions() {
       const visualHookWorldY = hookWorldY + hookVisualOffsetY;
       fishes.forEach(fish => {
@@ -505,6 +545,7 @@
           fish.caught = true;
           fish.el.classList.add('caught');
           score += fish.value;
+          showScorePop(fish.value, hookWorldX, (hookWorldY + hookVisualOffsetY) - cameraY);
           if (fish.type === 'gold') goldCaught += 1;
           else normalCaught += 1;
           updateHud();
