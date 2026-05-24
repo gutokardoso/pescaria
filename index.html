@@ -329,6 +329,13 @@
       }
     }
 
+  
+    .results-title-img {
+      width: min(100%, 420px);
+      display: block;
+      margin: 0 auto 10px auto;
+      filter: drop-shadow(0 6px 18px rgba(255, 196, 0, 0.28));
+    }
   </style>
   <link rel="icon" type="image/png" href="./assets/fish-gold.png">
 </head>
@@ -363,8 +370,8 @@
 
     <div class="overlay hidden" id="resultOverlay">
       <div class="panel">
-        <h1>Resultado</h1>
-        <p>Contagem final dos peixinhos resgatados.</p>
+        <img class="results-title-img" src="./assets/parabens.png" alt="PARABÉNS!" />
+        <p>Contagem final dos peixinhos:</p>
         <div class="score-grid">
           <div class="score-box"><span>Comuns</span><strong id="normalCount">0</strong></div>
           <div class="score-box"><span>Dourados</span><strong id="goldCount">0</strong></div>
