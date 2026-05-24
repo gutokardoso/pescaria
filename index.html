@@ -367,7 +367,8 @@
     let hookWorldX = 0;
     let hookWorldY = 0;
     let targetX = 0;
-    let targetWorldY = 0;
+    let hookVisualOffsetY = 0;
+    let targetVisualOffsetY = 0;
     let verticalControlActive = false;
     let cameraY = 0;
     let state = 'idle';
@@ -388,7 +389,7 @@
       downSpeed: 620,
       upSpeed: 145,
       verticalEase: 0.18,
-      verticalControlRange: 150,
+      verticalControlRange: 120,
       horizontalEase: 0.2,
       fishCount: 30,
       hookCollisionRadius: 36
@@ -476,7 +477,8 @@
       const rodTipX = gameWidth * config.rodTipXRatio;
       const rodTipScreenY = config.rodTipY - cameraY;
       const hookScreenX = hookWorldX;
-      const hookScreenY = hookWorldY - cameraY;
+      const baseHookScreenY = hookWorldY - cameraY;
+      const hookScreenY = baseHookScreenY + hookVisualOffsetY;
 
       fishingLine.setAttribute('x1', rodTipX.toFixed(1));
       fishingLine.setAttribute('y1', rodTipScreenY.toFixed(1));
@@ -489,12 +491,13 @@
     }
 
     function checkCollisions() {
+      const visualHookWorldY = hookWorldY + hookVisualOffsetY;
       fishes.forEach(fish => {
         if (fish.caught) return;
         const fishCenterX = fish.x + fish.width / 2;
         const fishCenterY = fish.y + fish.height / 2;
         const dx = hookWorldX - fishCenterX;
-        const dy = hookWorldY - fishCenterY;
+        const dy = visualHookWorldY - fishCenterY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < config.hookCollisionRadius) {
@@ -523,23 +526,21 @@
 
       if (state === 'down') {
         hookWorldY += config.downSpeed * dt;
-        targetWorldY = hookWorldY;
+        hookVisualOffsetY = 0;
+        targetVisualOffsetY = 0;
         if (hookWorldY >= config.maxDepth) {
           hookWorldY = config.maxDepth;
-          targetWorldY = hookWorldY;
           state = 'up';
         }
       } else if (state === 'up') {
         hookWorldY -= config.upSpeed * dt;
 
         if (verticalControlActive) {
-          const upperLimit = Math.max(config.endY, hookWorldY - config.verticalControlRange);
-          const lowerLimit = Math.min(config.maxDepth, hookWorldY + config.verticalControlRange);
-          const clampedTargetY = clamp(targetWorldY, upperLimit, lowerLimit);
-          hookWorldY += (clampedTargetY - hookWorldY) * config.verticalEase;
-          hookWorldY = clamp(hookWorldY, config.endY, config.maxDepth);
+          targetVisualOffsetY = clamp(targetVisualOffsetY, -config.verticalControlRange, config.verticalControlRange);
+          hookVisualOffsetY += (targetVisualOffsetY - hookVisualOffsetY) * config.verticalEase;
         } else {
-          targetWorldY = hookWorldY;
+          hookVisualOffsetY += (0 - hookVisualOffsetY) * config.verticalEase;
+          targetVisualOffsetY = hookVisualOffsetY;
         }
 
         checkCollisions();
@@ -565,7 +566,8 @@
       hookWorldX = gameWidth * config.rodTipXRatio;
       targetX = hookWorldX;
       hookWorldY = config.startY;
-      targetWorldY = hookWorldY;
+      hookVisualOffsetY = 0;
+      targetVisualOffsetY = 0;
       verticalControlActive = false;
       cameraY = 0;
       state = 'down';
@@ -592,7 +594,9 @@
       targetX = clamp(clientX - rect.left, 22, gameWidth - 22);
 
       if (state === 'up') {
-        targetWorldY = clamp(clientY - rect.top + cameraY, config.endY, config.maxDepth);
+        const pointerScreenY = clientY - rect.top;
+        const baseHookScreenY = hookWorldY - cameraY;
+        targetVisualOffsetY = clamp(pointerScreenY - baseHookScreenY, -config.verticalControlRange, config.verticalControlRange);
         verticalControlActive = true;
       }
     }
@@ -614,11 +618,11 @@
       if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') targetX -= 52;
       if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') targetX += 52;
       if (state === 'up' && (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w')) {
-        targetWorldY = clamp(hookWorldY - 70, config.endY, config.maxDepth);
+        targetVisualOffsetY = clamp(targetVisualOffsetY - 45, -config.verticalControlRange, config.verticalControlRange);
         verticalControlActive = true;
       }
       if (state === 'up' && (event.key === 'ArrowDown' || event.key.toLowerCase() === 's')) {
-        targetWorldY = clamp(hookWorldY + 70, config.endY, config.maxDepth);
+        targetVisualOffsetY = clamp(targetVisualOffsetY + 45, -config.verticalControlRange, config.verticalControlRange);
         verticalControlActive = true;
       }
       targetX = clamp(targetX, 22, gameWidth - 22);
