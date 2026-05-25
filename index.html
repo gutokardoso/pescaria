@@ -463,9 +463,8 @@
       pointer-events: none;
     }
 
-        .depth-progress-fill {
+            .depth-progress-fill {
       position: absolute;
-      bottom: 0;
       left: 0;
       width: 100%;
       height: 0%;
@@ -733,14 +732,22 @@
         depthPercent = Math.max(0, Math.min(1,
           (hookWorldY - config.startY) / (config.maxDepth - config.startY)
         ));
+
+        if (depthProgressFill) {
+          depthProgressFill.style.top = 'auto';
+          depthProgressFill.style.bottom = '0';
+          depthProgressFill.style.height = `${depthPercent * 100}%`;
+        }
       } else {
         depthPercent = Math.max(0, Math.min(1,
           (hookWorldY - config.endY) / (config.maxDepth - config.endY)
         ));
-      }
 
-      if (depthProgressFill) {
-        depthProgressFill.style.height = `${depthPercent * 100}%`;
+        if (depthProgressFill) {
+          depthProgressFill.style.top = '0';
+          depthProgressFill.style.bottom = 'auto';
+          depthProgressFill.style.height = `${depthPercent * 100}%`;
+        }
       }
     }
 
