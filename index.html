@@ -377,7 +377,12 @@
 
     <div class="overlay hidden" id="resultOverlay">
       <div class="panel">
-        <img class="results-title-img" src="./assets/parabens.png" alt="PARABÉNS!" />
+        <img
+            class="results-title-img"
+            id="resultTitleImage"
+            src="./assets/resultado-fartura.png"
+            alt="Resultado Final"
+          />
         <p>Contagem final dos peixinhos:</p>
         <div class="score-grid">
           <div class="score-box"><span>Comuns</span><strong id="normalCount">0</strong></div>
@@ -662,6 +667,17 @@
     function finishRound() {
       state = 'result';
       cancelAnimationFrame(animationId);
+
+      const resultTitleImage = document.getElementById('resultTitleImage');
+
+      if (score >= 1000) {
+        resultTitleImage.src = './assets/resultado-fartura.png';
+        resultTitleImage.alt = 'Quanta fartura!';
+      } else {
+        resultTitleImage.src = './assets/resultado-fraca.png';
+        resultTitleImage.alt = 'Pescaria Fraca!';
+      }
+
       normalCountEl.textContent = normalCaught;
       goldCountEl.textContent = goldCaught;
       finalScoreEl.textContent = score;
