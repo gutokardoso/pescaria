@@ -620,12 +620,7 @@
 
     <div class="overlay hidden" id="resultOverlay">
       <div class="panel">
-        <img
-            class="results-title-img"
-            id="resultTitleImage"
-            src="./assets/resultado-fartura.png"
-            alt="Resultado Final"
-          />
+        <img class="results-title-img" id="resultTitleImage" src="./assets/resultado-fartura.png" alt="Resultado Final" />
         <p>Contagem final dos peixinhos:</p>
         <div class="score-grid">
           <div class="score-box"><span>Comuns</span><strong id="normalCount">0</strong></div>
@@ -1109,7 +1104,7 @@
           state = 'up';
         }
       } else if (state === 'up') {
-        if (freezeTimer > 0) {
+        if (freezeTimer > 0 && hookWorldY > config.endY + 90) {
           freezeTimer = Math.max(0, freezeTimer - dt);
           freezeSpawnTimer += dt;
           if (freezeSpawnTimer >= 0.45) {
@@ -1174,14 +1169,20 @@
 
       const resultTitleImage = document.getElementById('resultTitleImage');
 
-      if (score < 1000) {
-        finalTitleImage.src = './assets/resultado-vergonha.png';
-      } else if (score < 5000) {
-        finalTitleImage.src = './assets/resultado-fraca.png';
-      } else if (score < 10000) {
-        finalTitleImage.src = './assets/resultado-boa.png';
-      } else {
-        finalTitleImage.src = './assets/resultado-fartura.png';
+      if (resultTitleImage) {
+        if (score < 1000) {
+          resultTitleImage.src = './assets/resultado-vergonha.png';
+          resultTitleImage.alt = 'Que vergonha!';
+        } else if (score < 5000) {
+          resultTitleImage.src = './assets/resultado-fraca.png';
+          resultTitleImage.alt = 'Pescaria fraca!';
+        } else if (score < 10000) {
+          resultTitleImage.src = './assets/resultado-boa.png';
+          resultTitleImage.alt = 'Boa pescaria!';
+        } else {
+          resultTitleImage.src = './assets/resultado-fartura.png';
+          resultTitleImage.alt = 'Quanta fartura!';
+        }
       }
 
       normalCountEl.textContent = normalCaught;
