@@ -475,178 +475,109 @@
     }
 
 
-    .bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(173,239,255,0.45));
-      pointer-events: none;
-      opacity: 0.7;
-      z-index: 2;
-      animation: bubbleFloat linear forwards;
-    }
-
-    @keyframes bubbleFloat {
-      from { transform: translateY(0px) scale(1); opacity: 0.75; }
-      to { transform: translateY(-180px) scale(1.35); opacity: 0; }
-    }
-
-    .light-ray {
-      position: absolute;
-      top: -20%;
-      width: 120px;
-      height: 180%;
-      background: linear-gradient(to bottom,
-        rgba(255,255,255,0.22),
-        rgba(255,255,255,0.02)
-      );
-      transform: rotate(12deg);
-      filter: blur(6px);
-      z-index: 1;
-      pointer-events: none;
-      animation: rayMove 9s ease-in-out infinite alternate;
-    }
-
-    @keyframes rayMove {
-      from { transform: translateX(-20px) rotate(10deg); }
-      to { transform: translateX(30px) rotate(15deg); }
-    }
-
-    .frenzy-banner {
-      position: absolute;
-      left: 50%;
-      top: 22%;
-      transform: translate(-50%, -50%);
-      padding: 14px 26px;
-      border-radius: 999px;
-      background: linear-gradient(135deg,#fff17a,#ff9f1c,#fff17a);
-      color: #5b2a00;
-      font-size: clamp(20px,5vw,34px);
-      font-weight: 900;
-      z-index: 180;
-      box-shadow: 0 14px 34px rgba(255,174,0,0.35);
-      animation: frenzyPop 1.2s ease-out forwards;
-      pointer-events: none;
-    }
-
-    @keyframes frenzyPop {
-      0% { opacity:0; transform: translate(-50%,-20%) scale(0.6);}
-      15% { opacity:1; transform: translate(-50%,-50%) scale(1.08);}
-      100% { opacity:0; transform: translate(-50%,-90%) scale(0.94);}
-    }
-
-
-    .game.cinematic-water::after {
-      content: '';
+    .cinematic-overlay {
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.18), transparent 45%),
-        radial-gradient(circle at 30% 60%, rgba(0,190,255,0.12), transparent 40%),
-        radial-gradient(circle at 70% 40%, rgba(255,255,255,0.08), transparent 35%);
-      mix-blend-mode: screen;
+      z-index: 145;
       pointer-events: none;
-      animation: waterPulse 5s ease-in-out infinite alternate;
-      z-index: 4;
-    }
-
-    @keyframes waterPulse {
-      from { opacity: 0.45; filter: blur(2px); }
-      to { opacity: 0.9; filter: blur(6px); }
-    }
-
-    .hook {
-      filter:
-        drop-shadow(0 0 8px rgba(255,255,255,0.65))
-        drop-shadow(0 0 18px rgba(0,217,255,0.45))
-        drop-shadow(0 4px 6px rgba(0,0,0,0.25));
-      transition: transform 0.08s linear;
-    }
-
-    .hook.cinematic-hit {
-      animation: hookImpact 0.42s ease-out;
-    }
-
-    @keyframes hookImpact {
-      0% { transform: scale(1); }
-      25% { transform: scale(1.18) rotate(-4deg); }
-      60% { transform: scale(0.92) rotate(3deg); }
-      100% { transform: scale(1); }
-    }
-
-    .gold-flash {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle, rgba(255,240,120,0.95) 0%, rgba(255,190,0,0.45) 30%, transparent 70%);
-      z-index: 170;
-      pointer-events: none;
-      animation: goldFlash 0.5s ease-out forwards;
+      opacity: 0;
       mix-blend-mode: screen;
     }
 
-    @keyframes goldFlash {
+    .cinematic-overlay.gold {
+      background: radial-gradient(circle at center, rgba(255,238,99,0.85), rgba(255,176,0,0.25) 35%, transparent 70%);
+      animation: cinematicFlash 0.48s ease-out forwards;
+    }
+
+    .cinematic-overlay.water {
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.16), transparent 42%),
+        radial-gradient(circle at 25% 60%, rgba(0,210,255,0.10), transparent 45%),
+        radial-gradient(circle at 75% 45%, rgba(255,255,255,0.08), transparent 38%);
+      opacity: 0.45;
+      animation: cinematicWaterPulse 5.5s ease-in-out infinite alternate;
+      z-index: 3;
+    }
+
+    @keyframes cinematicFlash {
       0% { opacity: 0; }
-      20% { opacity: 1; }
+      18% { opacity: 1; }
       100% { opacity: 0; }
     }
 
-    .screen-shake {
-      animation: screenShake 0.35s linear;
+    @keyframes cinematicWaterPulse {
+      from { opacity: 0.28; filter: blur(1px); }
+      to { opacity: 0.62; filter: blur(5px); }
     }
 
-    @keyframes screenShake {
+    .hook.cinematic-glow {
+      filter:
+        drop-shadow(0 0 8px rgba(255,255,255,0.7))
+        drop-shadow(0 0 18px rgba(0,217,255,0.55))
+        drop-shadow(0 4px 6px rgba(0,0,0,0.25));
+    }
+
+    .hook.cinematic-hit {
+      animation: hookCinematicHit 0.35s ease-out;
+    }
+
+    @keyframes hookCinematicHit {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.14) rotate(-4deg); }
+      70% { transform: scale(0.96) rotate(3deg); }
+      100% { transform: scale(1); }
+    }
+
+    .screen-shake {
+      animation: cinematicShake 0.32s linear;
+    }
+
+    @keyframes cinematicShake {
       0% { transform: translate(0,0); }
-      20% { transform: translate(-4px,2px); }
-      40% { transform: translate(4px,-2px); }
-      60% { transform: translate(-3px,1px); }
-      80% { transform: translate(3px,-1px); }
+      20% { transform: translate(-3px,2px); }
+      40% { transform: translate(3px,-2px); }
+      60% { transform: translate(-2px,1px); }
+      80% { transform: translate(2px,-1px); }
       100% { transform: translate(0,0); }
     }
 
     .splash-wave {
       position: absolute;
+      z-index: 126;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.8);
+      border: 3px solid rgba(255,255,255,0.82);
       pointer-events: none;
-      z-index: 120;
-      animation: splashWave 0.8s ease-out forwards;
+      transform: translate(-50%, -50%) scale(0.2);
+      animation: cinematicWave 0.72s ease-out forwards;
       mix-blend-mode: screen;
     }
 
-    @keyframes splashWave {
-      from {
-        opacity: 0.9;
-        transform: translate(-50%, -50%) scale(0.2);
-      }
+    @keyframes cinematicWave {
       to {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(2.6);
+        transform: translate(-50%, -50%) scale(2.4);
       }
     }
 
-    .explosion-particle {
+    .burst-particle {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      z-index: 130;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       pointer-events: none;
-      z-index: 140;
-      animation: explodeParticle 0.7s ease-out forwards;
+      animation: cinematicBurst 0.68s ease-out forwards;
     }
 
-    @keyframes explodeParticle {
-      from {
-        opacity: 1;
-        transform: translate(0,0) scale(1);
-      }
-      to {
-        opacity: 0;
-        transform: translate(var(--dx), var(--dy)) scale(0.1);
-      }
+    @keyframes cinematicBurst {
+      from { opacity: 1; transform: translate(0,0) scale(1); }
+      to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.15); }
     }
 
-    .slowmo {
-      filter: saturate(1.3) brightness(1.08);
+    .game-shell.slowmo-look {
+      filter: saturate(1.22) brightness(1.06);
     }
 
 </style>
@@ -654,6 +585,7 @@
 </head>
 <body>
   <main class="game-shell" id="game">
+    <div class="cinematic-overlay water"></div>
     
       <div class="depth-progress">
         <div class="depth-progress-fill" id="depthProgressFill"></div>
@@ -739,13 +671,8 @@
     let goldCaught = 0;
     let comboStreak = 0;
     let lastMultiplier = 1;
-              comboGoldStreak = 0;
-              triggerScreenShake();
     let freezeTimer = 0;
     let freezeSpawnTimer = 0;
-    let frenzyTimer = 0;
-    let comboGoldStreak = 0;
-    let biomeState = 'surface';
     let lastTime = 0;
 
     const config = {
@@ -836,117 +763,8 @@
     }
 
 
-    
-    
-    function triggerScreenShake() {
-      game.classList.remove('screen-shake');
-      void game.offsetWidth;
-      game.classList.add('screen-shake');
-      setTimeout(() => game.classList.remove('screen-shake'), 360);
-    }
-
-    function triggerGoldFlash() {
-      const flash = document.createElement('div');
-      flash.className = 'gold-flash';
-      game.appendChild(flash);
-      setTimeout(() => flash.remove(), 520);
-    }
-
-    function spawnSplashWave(x, y) {
-      const wave = document.createElement('div');
-      wave.className = 'splash-wave';
-      wave.style.left = `${x}px`;
-      wave.style.top = `${y}px`;
-      wave.style.width = '50px';
-      wave.style.height = '50px';
-      game.appendChild(wave);
-      setTimeout(() => wave.remove(), 820);
-    }
-
-    function spawnExplosion(x, y, gold = false) {
-      const total = gold ? 24 : 14;
-
-      for (let i = 0; i < total; i++) {
-        const p = document.createElement('div');
-        p.className = 'explosion-particle';
-        p.style.left = `${x}px`;
-        p.style.top = `${y}px`;
-        p.style.background = gold ? '#ffe45e' : '#8df7ff';
-
-        const angle = Math.random() * Math.PI * 2;
-        const dist = (gold ? 60 : 42) + Math.random() * 30;
-
-        p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
-        p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
-
-        game.appendChild(p);
-        setTimeout(() => p.remove(), 720);
-      }
-    }
-
-    function activateSlowMotion() {
-      game.classList.add('slowmo');
-      const previousSpeed = config.upSpeed;
-      config.upSpeed *= 0.45;
-
-      setTimeout(() => {
-        config.upSpeed = previousSpeed;
-        game.classList.remove('slowmo');
-      }, 650);
-    }
-
-
-    function spawnBubble() {
-      const b = document.createElement('div');
-      b.className = 'bubble';
-      const size = 6 + Math.random() * 18;
-      b.style.width = `${size}px`;
-      b.style.height = `${size}px`;
-      b.style.left = `${Math.random() * gameWidth}px`;
-      b.style.bottom = `${-20 - Math.random() * 40}px`;
-      b.style.animationDuration = `${4 + Math.random() * 6}s`;
-      game.appendChild(b);
-      setTimeout(() => b.remove(), 10000);
-    }
-
-    function updateBiome() {
-      const progress = hookWorldY / config.maxDepth;
-
-      if (progress < 0.28) {
-        biomeState = 'surface';
-        game.style.background = 'linear-gradient(to bottom, #8ee7ff 0 15%, #3bb7e6 15% 25%, #0479b9 25% 100%)';
-      } else if (progress < 0.58) {
-        biomeState = 'mid';
-        game.style.background = 'linear-gradient(to bottom, #57c7ff 0%, #006aa6 55%, #01456f 100%)';
-      } else {
-        biomeState = 'deep';
-        game.style.background = 'linear-gradient(to bottom, #053b63 0%, #02233d 45%, #010f1f 100%)';
-      }
-    }
-
-    function activateFrenzy() {
-      frenzyTimer = 8;
-
-      const banner = document.createElement('div');
-      banner.className = 'frenzy-banner';
-      banner.textContent = 'FRENESI DOS MARES!';
-      game.appendChild(banner);
-      setTimeout(() => banner.remove(), 1300);
-
-      for (let i = 0; i < 12; i++) {
-        spawnBonusFish();
-      }
-
-      playTone(740,0.12,'triangle',0.07);
-      setTimeout(()=>playTone(980,0.12,'triangle',0.06),120);
-    }
-
-
     function spawnBonusFish() {
-      const frenzyBoost = frenzyTimer > 0;
-      const fishType = frenzyBoost
-        ? (Math.random() < 0.65 ? 'gold' : 'normal')
-        : (Math.random() < 0.35 ? 'gold' : 'normal');
+      const fishType = Math.random() < 0.35 ? 'gold' : 'normal';
       const el = document.createElement('div');
       el.className = `fish ${fishType}`;
       world.appendChild(el);
@@ -1120,6 +938,83 @@
       setTimeout(() => img.remove(), 2200);
     }
 
+
+    function cinematicFlashGold() {
+      const flash = document.createElement('div');
+      flash.className = 'cinematic-overlay gold';
+      game.appendChild(flash);
+      setTimeout(() => flash.remove(), 520);
+    }
+
+    function cinematicShake() {
+      game.classList.remove('screen-shake');
+      void game.offsetWidth;
+      game.classList.add('screen-shake');
+      setTimeout(() => game.classList.remove('screen-shake'), 340);
+    }
+
+    function cinematicHitHook() {
+      hook.classList.add('cinematic-glow');
+      hook.classList.remove('cinematic-hit');
+      void hook.offsetWidth;
+      hook.classList.add('cinematic-hit');
+      setTimeout(() => hook.classList.remove('cinematic-hit'), 380);
+    }
+
+    function cinematicWave(x, y) {
+      const wave = document.createElement('div');
+      wave.className = 'splash-wave';
+      wave.style.left = `${x}px`;
+      wave.style.top = `${y}px`;
+      game.appendChild(wave);
+      setTimeout(() => wave.remove(), 760);
+    }
+
+    function cinematicBurst(x, y, type) {
+      const total = type === 'gold' ? 24 : type === 'bad' ? 12 : 16;
+      for (let i = 0; i < total; i++) {
+        const p = document.createElement('span');
+        p.className = 'burst-particle';
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+        p.style.background = type === 'gold' ? '#ffe45e' : type === 'bad' ? '#ff4b4b' : '#8df7ff';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = (type === 'gold' ? 64 : 44) + Math.random() * 28;
+        p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+        p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+        game.appendChild(p);
+        setTimeout(() => p.remove(), 720);
+      }
+    }
+
+    function cinematicSlowMotion() {
+      if (game.classList.contains('slowmo-look')) return;
+      game.classList.add('slowmo-look');
+      const originalUpSpeed = config.upSpeed;
+      config.upSpeed = originalUpSpeed * 0.55;
+      setTimeout(() => {
+        config.upSpeed = originalUpSpeed;
+        game.classList.remove('slowmo-look');
+      }, 520);
+    }
+
+    function cinematicCaptureFeedback(fishType, x, y) {
+      cinematicHitHook();
+      cinematicWave(x, y);
+
+      if (fishType === 'gold') {
+        cinematicFlashGold();
+        cinematicShake();
+        cinematicSlowMotion();
+        cinematicBurst(x, y, 'gold');
+      } else if (fishType === 'baiacu') {
+        cinematicShake();
+        cinematicBurst(x, y, 'bad');
+      } else {
+        cinematicBurst(x, y, 'normal');
+      }
+    }
+
     function showScorePop(value, x, y) {
       const img = document.createElement('img');
       img.className = 'score-pop';
@@ -1176,47 +1071,18 @@
             }
 
             score += earnedValue;
+            cinematicCaptureFeedback(fish.type, popX, popY);
             showScorePop(fish.value, popX, popY);
             showParticles(popX, popY, earnedValue);
-            spawnSplashWave(popX, popY);
-            spawnExplosion(popX, popY, fish.type === 'gold');
             playCatchSound(fish.value);
           }
 
           if (fish.type === 'gold') {
-            triggerGoldFlash();
-            triggerScreenShake();
-            activateSlowMotion();
-            hook.classList.remove('cinematic-hit');
-            void hook.offsetWidth;
-            hook.classList.add('cinematic-hit');
-            spawnSplashWave(popX, popY);
-            spawnExplosion(popX, popY, true);
-
-            comboGoldStreak += 1;
-            if (comboGoldStreak >= 3 && frenzyTimer <= 0) {
-              comboGoldStreak = 0;
-              activateFrenzy();
-            }
             goldCaught += 1;
           } else if (fish.type === 'normal') {
             normalCaught += 1;
           }
           updateHud();
-
-      updateBiome();
-
-      if (Math.random() < 0.08) {
-        spawnBubble();
-      }
-
-      if (frenzyTimer > 0) {
-        frenzyTimer = Math.max(0, frenzyTimer - dt);
-
-        if (Math.random() < 0.16) {
-          spawnBonusFish();
-        }
-      }
         }
       });
     }
