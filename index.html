@@ -370,7 +370,7 @@
     <div class="overlay" id="startOverlay">
       <div class="panel">
         <img class="start-logo" src="./assets/logo-pescaria.png" alt="Pescaria - Aventura no Mar" />
-        <p>Mova o anzol para os lados para pegar os peixes no caminho.<br><strong>Peixes dourados valem mais pontos!</strong><br>Cuidado com o baiacu! Ele tira 50 pontos.</p>
+        <p>Mova o anzol para os lados para pegar os peixes no caminho.<br><strong>Peixes dourados valem 100 pontos!</strong><br>Cuidado com o baiacu! Ele tira 50 pontos.</p>
         <button id="startBtn">Jogar agora</button>
       </div>
     </div>
@@ -495,10 +495,10 @@
           type: fishType,
           value:
             fishType === 'gold'
-              ? 50
+              ? 100
               : fishType === 'baiacu'
                 ? -50
-                : 10,
+                : 50,
           caught: false
         });
       }
@@ -552,12 +552,12 @@
     function showScorePop(value, x, y) {
       const img = document.createElement('img');
       img.className = 'score-pop';
-      if (value === 50) {
-        img.src = './assets/score-50.png';
+      if (value === 100) {
+        img.src = './assets/score-100.png';
       } else if (value === -50) {
         img.src = './assets/score-minus-50.png';
       } else {
-        img.src = './assets/score-10.png';
+        img.src = './assets/score-50.png';
       }
       img.alt = `+${value} pontos`;
       img.style.left = `${x}px`;
