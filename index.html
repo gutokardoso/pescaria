@@ -1174,12 +1174,14 @@
 
       const resultTitleImage = document.getElementById('resultTitleImage');
 
-      if (score >= 1000) {
-        resultTitleImage.src = './assets/resultado-fartura.png';
-        resultTitleImage.alt = 'Quanta fartura!';
+      if (score < 1000) {
+        finalTitleImage.src = './assets/resultado-vergonha.png';
+      } else if (score < 5000) {
+        finalTitleImage.src = './assets/resultado-fraca.png';
+      } else if (score < 10000) {
+        finalTitleImage.src = './assets/resultado-boa.png';
       } else {
-        resultTitleImage.src = './assets/resultado-fraca.png';
-        resultTitleImage.alt = 'Pescaria Fraca!';
+        finalTitleImage.src = './assets/resultado-fartura.png';
       }
 
       normalCountEl.textContent = normalCaught;
