@@ -463,7 +463,7 @@
       pointer-events: none;
     }
 
-    .depth-progress-fill {
+        .depth-progress-fill {
       position: absolute;
       bottom: 0;
       left: 0;
@@ -727,9 +727,18 @@
 
       hook.style.left = `${hookScreenX - 14}px`;
       hook.style.top = `${hookScreenY}px`;
-      const depthPercent = Math.max(0, Math.min(1,
-        1 - ((hookWorldY - config.endY) / (config.maxDepth - config.endY))
-      ));
+      let depthPercent = 0;
+
+      if (state === 'down') {
+        depthPercent = Math.max(0, Math.min(1,
+          (hookWorldY - config.startY) / (config.maxDepth - config.startY)
+        ));
+      } else {
+        depthPercent = Math.max(0, Math.min(1,
+          (hookWorldY - config.endY) / (config.maxDepth - config.endY)
+        ));
+      }
+
       if (depthProgressFill) {
         depthProgressFill.style.height = `${depthPercent * 100}%`;
       }
@@ -851,7 +860,7 @@
           flashHook();
 
           if (fish.type === 'rainbow') {
-            freezeTimer = Math.max(freezeTimer, 5);
+            freezeTimer += 5;
             freezeSpawnTimer = 0;
             comboStreak += 1;
             showFreezeBanner();
