@@ -435,7 +435,7 @@
       verticalControlRange: 120,
       horizontalEase: 0.2,
       fishCount: 30,
-      baiacuChance: 0.25,
+      baiacuChance: 0.20,
       hookCollisionRadius: 36
     };
 
@@ -465,11 +465,11 @@
       for (let i = 0; i < config.fishCount; i++) {
         const fishRoll = Math.random();
         const fishType =
-          i < 4
+          i < 2
             ? 'baiacu'
             : fishRoll < config.baiacuChance
               ? 'baiacu'
-              : fishRoll < config.baiacuChance + 0.18
+              : fishRoll < config.baiacuChance + 0.22
                 ? 'gold'
                 : 'normal';
 
