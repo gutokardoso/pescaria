@@ -345,8 +345,8 @@
     }
   
     .fish.rainbow {
-      width: 86px;
-      height: 58px;
+      width: 96px;
+      height: 60px;
       background-image: url('./assets/fish-rainbow.png');
       filter: drop-shadow(0 0 14px rgba(93, 214, 255, 0.75)) drop-shadow(0 5px 6px rgba(0,60,100,0.18));
     }
@@ -423,6 +423,28 @@
     @keyframes particleBurst {
       from { opacity: 1; transform: translate(0, 0) scale(1); }
       to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+    }
+
+  
+    .rainbow-notice {
+      position: absolute;
+      left: 50%;
+      top: 47%;
+      width: min(92%, 430px);
+      height: auto;
+      z-index: 160;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.82);
+      opacity: 0;
+      animation: rainbowNoticePop 2.15s ease-out forwards;
+      filter: drop-shadow(0 10px 24px rgba(0, 60, 120, 0.26));
+    }
+
+    @keyframes rainbowNoticePop {
+      0% { opacity: 0; transform: translate(-50%, -42%) scale(0.72); }
+      12% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      78% { opacity: 1; transform: translate(-50%, -52%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -62%) scale(0.9); }
     }
 
   </style>
@@ -510,6 +532,7 @@
     let comboStreak = 0;
     let lastMultiplier = 1;
     let freezeTimer = 0;
+    let freezeSpawnTimer = 0;
     let lastTime = 0;
 
     const config = {
@@ -571,8 +594,8 @@
         world.appendChild(el);
 
         const dir = Math.random() > 0.5 ? 1 : -1;
-        const width = fishType === 'gold' ? 82 : fishType === 'baiacu' ? 76 : fishType === 'rainbow' ? 86 : 72;
-        const height = fishType === 'gold' ? 58 : fishType === 'baiacu' ? 76 : fishType === 'rainbow' ? 58 : 54;
+        const width = fishType === 'gold' ? 82 : fishType === 'baiacu' ? 76 : fishType === 'rainbow' ? 96 : 72;
+        const height = fishType === 'gold' ? 58 : fishType === 'baiacu' ? 76 : fishType === 'rainbow' ? 60 : 54;
         const x = dir === 1 ? -140 - Math.random() * 380 : gameWidth + 140 + Math.random() * 380;
         const y = minY + Math.random() * (maxY - minY);
         const speed = (50 + Math.random() * 95) * dir;
@@ -597,6 +620,36 @@
           caught: false
         });
       }
+    }
+
+
+    function spawnBonusFish() {
+      const fishType = Math.random() < 0.35 ? 'gold' : 'normal';
+      const el = document.createElement('div');
+      el.className = `fish ${fishType}`;
+      world.appendChild(el);
+
+      const dir = Math.random() > 0.5 ? 1 : -1;
+      const width = fishType === 'gold' ? 82 : 72;
+      const height = fishType === 'gold' ? 58 : 54;
+      const screenY = 150 + Math.random() * (gameHeight - 260);
+      const y = cameraY + screenY;
+      const x = dir === 1 ? -120 : gameWidth + 120;
+      const speed = (90 + Math.random() * 120) * dir;
+
+      fishes.push({
+        el,
+        x,
+        y,
+        speed,
+        dir,
+        width,
+        height,
+        type: fishType,
+        value: fishType === 'gold' ? 100 : 50,
+        caught: false,
+        bonus: true
+      });
     }
 
     function updateFishes(dt) {
@@ -715,11 +768,12 @@
     }
 
     function showFreezeBanner() {
-      const banner = document.createElement('div');
-      banner.className = 'freeze-banner';
-      banner.textContent = '+5s para pescar!';
-      game.appendChild(banner);
-      setTimeout(() => banner.remove(), 950);
+      const img = document.createElement('img');
+      img.className = 'rainbow-notice';
+      img.src = './assets/aviso-arcoiris.png';
+      img.alt = 'Peixe Arco-íris! Subida pausada! 5 segundos';
+      game.appendChild(img);
+      setTimeout(() => img.remove(), 2200);
     }
 
     function showScorePop(value, x, y) {
@@ -759,6 +813,7 @@
 
           if (fish.type === 'rainbow') {
             freezeTimer = Math.max(freezeTimer, 5);
+            freezeSpawnTimer = 0;
             comboStreak += 1;
             showFreezeBanner();
             showParticles(popX, popY, 100);
@@ -816,6 +871,11 @@
       } else if (state === 'up') {
         if (freezeTimer > 0) {
           freezeTimer = Math.max(0, freezeTimer - dt);
+          freezeSpawnTimer += dt;
+          if (freezeSpawnTimer >= 0.45) {
+            freezeSpawnTimer = 0;
+            spawnBonusFish();
+          }
         } else {
           hookWorldY -= config.upSpeed * dt;
         }
@@ -850,6 +910,7 @@
       comboStreak = 0;
       lastMultiplier = 1;
       freezeTimer = 0;
+      freezeSpawnTimer = 0;
       updateHud();
       hookWorldX = gameWidth * config.rodTipXRatio;
       targetX = hookWorldX;
